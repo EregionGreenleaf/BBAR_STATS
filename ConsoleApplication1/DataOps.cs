@@ -47,7 +47,7 @@ namespace BBAR_Stat
 		<tbody>";
 
             string actualPage; //= WebOps.downloadWebPage(html);
-            WebOps.GetPage();
+            //WebOps.GetPage();
             actualPage = WebOps.LoginAndDownload();
             actualPage = WebOps.downloadWebPage(html);
             HtmlPage test = new HtmlPage();

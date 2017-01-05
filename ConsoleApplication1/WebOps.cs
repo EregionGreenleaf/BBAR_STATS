@@ -31,14 +31,14 @@ namespace BBAR_Stat
 
         public static string LoginAndDownload()
         {
-            string formUrl = "https://mwomercs.com/login"; // NOTE: This is the URL the form POSTs to, not the URL of the form (you can find this in the "action" attribute of the HTML's form tag
-            string formParams = string.Format("email.span4={0}&password.span4={1}", "eregiongreenleafthegray@yahoo.it", "chupa33");
+            string formUrl = "https://mwomercs.com/do/login"; // NOTE: This is the URL the form POSTs to, not the URL of the form (you can find this in the "action" attribute of the HTML's form tag
+            string formParams = string.Format("email={0}&password={1}", "eregiongreenleafthegray@yahoo.it", "chupa33");
             string cookieHeader;
 
-            // ORIG WebRequest req = WebRequest.Create(formUrl);
-            var cookies = new CookieContainer();
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(formUrl);
-            req.CookieContainer = cookies;
+            WebRequest req = WebRequest.Create(formUrl);
+            //var cookies = new CookieContainer();
+            //HttpWebRequest req = (HttpWebRequest)WebRequest.Create(formUrl);
+            //req.CookieContainer = cookies;
 
             req.ContentType = "application/x-www-form-urlencoded";
             req.Method = "POST";
@@ -48,7 +48,7 @@ namespace BBAR_Stat
             {
                 os.Write(bytes, 0, bytes.Length);
             }
-            WebResponse resp = req.GetResponse();
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
             cookieHeader = resp.Headers["Set-cookie"];
             string pageFrom;
             using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
@@ -71,8 +71,12 @@ namespace BBAR_Stat
 
             HttpWebRequest getRequest = (HttpWebRequest)WebRequest.Create(getUrl);
             getRequest.CookieContainer = new CookieContainer();
-            //getRequest.CookieContainer.Add(resp.Cookies);
+            getRequest.CookieContainer.Add(resp.Cookies);
+
+            cookieHeader = "leaderboard__rank_by = 0; hl = en_us; _ga = GA1.2.1705776397.1474369677; PHPSESSID = 40hrr0kqqgrh4nbevnrltokmj3";
             getRequest.Headers.Add("Cookie", cookieHeader);
+            cookieHeader = "keep-alive";
+            getRequest.Headers.Add("Connection", cookieHeader);
 
             WebResponse getResponse = getRequest.GetResponse();
             using (StreamReader sr = new StreamReader(getResponse.GetResponseStream()))
